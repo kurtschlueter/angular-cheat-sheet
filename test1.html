@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+
+  <!-- AngularJS starts automatically when the web page has loaded. -->
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+  <script src="app_controller.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="application.css">
+
+</head>
+<body>
+
+<h1> Angular Workthrough </h1>
+
+  <!-- The ng-app directive tells AngularJS that the <div> element is the "owner" of an AngularJS application. The ng-app directive defines the application, the ng-controller directive defines the controller.-->
+  <div ng-app="myApp1">
+
+      <p>The rootscope's favorite color:</p>
+      <h1>{{color}}</h1>
+
+      <div  ng-controller="myCtrl1">
+
+      <!-- We defined the root scope color as blue and the scope of the controllers favorite color as red. The result of the following color will be red since the scope of the controller is defined. If we took out the ng-controller directive, this would change to blue. It is clear to see that the controller scope has higher priority than the rootscope. -->
+      <p>The scope of the controller's favorite color:</p>
+      <h1>{{color}}</h1>
+
+
+      <!-- The ng-model directive binds the value of the input field to the application variable name. -->
+      <p>Name: <input type="text" ng-model="name"></p>
+
+      <!-- The ng-bind directive binds the innerHTML of the <p> element to the application variable name. -->
+      <p ng-bind="name"></p>
+
+      <p><b>Change the color:</b></p>
+      <input style="background-color:{{myCol}}" ng-model="myCol" value="{{myCol}}">
+      <br><br>
+
+      <!-- AngularJS expressions are written inside double braces: {{ expression }}. AngularJS will "output" data exactly where the expression is written: -->
+      <p><b>Practice with expressions in double braces:</b></p>
+      <p>My first expression: {{ 5 + 5 }}</p>
+
+
+      <!-- AngularJS expressions bind AngularJS data to HTML the same way as the ng-bind directive. -->
+      <p>Name: <input type="text" ng-model="name2"></p>
+      <p>{{name2}}</p>
+
+
+      <!-- These names are auto-filled in the controller -->
+      First Name: <input type="text" ng-model="firstName"><br>
+      Last Name: <input type="text" ng-model="lastName"><br>
+      <br>
+      Full Name: {{firstName + " " + lastName}} <br><br>
+
+      Quantity: <input type:"text" ng-model="quantity"><br>
+      Price per: <input type:"text" ng-model="cost"><br>
+      <p>Total dollar amount: {{ quantity * cost }}</p>
+
+      <p><b>example using ng-bind for numbers:</b></p>
+      <p>Total in dollar: <span ng-bind="quantity * cost"></span></p>
+
+  <!-- --------------------------------------------------------------------------- -->
+      <!-- Angluar numbers, strings, arrays, objects are like js n, s, a, o. -->
+
+      <!-- Like JavaScript expressions, AngularJS expressions can contain literals, operators, and variables. -->
+
+      <!-- Unlike JavaScript expressions, AngularJS expressions can be written inside HTML.  -->
+
+      <!-- AngularJS expressions do not support conditionals, loops, and exceptions, while JavaScript expressions do.
+   -->
+
+      <!-- AngularJS expressions support filters, while JavaScript expressions do not. -->
+
+  <!-- --------------------------------------------------------------------------- -->
+
+      <!-- AngularJS has a set of built-in directives which offers functionality to your applications. -->
+      <p><b>Repeat Directive:</b></p>
+      <ul>
+        <!-- The ng-repeat directive repeats an HTML element -->
+        <li ng-repeat="x in names">
+          {{ x.name + " is from " + x.country }}
+        </li>
+      </ul>
+
+      <p><b>Making a Custom Directive:</b></p>
+
+      <test-directive></test-directive> <!-- element -->
+      <!-- The above result could have been attained using the following formats as well. It just depends on what the restrictions are in this specific app directive -->
+      <div w3-test-directive></div> <!--  attribute -->
+      <div class="test-directive"></div> <!-- class -->
+
+      <p><b>Practicing some validations:</b></p>
+      <span> Email: </span>
+
+      <form name="myForm">
+        <input type="email" name="myAddress" ng-model="text">
+
+        <!-- the span will be displayed only if the expression in the ng-show attribute returns true. -->
+        <span ng-show="myForm.myAddress.$error.email">Not a valid e-mail address</span>
+
+
+        <!-- The ng-model directive can provide other status info for application data other than error => (invalid, dirty, touched): -->
+        <p>Valid: {{myForm.myAddress.$valid}} (if true, the value meets all criteria).</p>
+        <p>Dirty: {{myForm.myAddress.$dirty}} (if true, the value has been changed).</p>
+        <p>Touched: {{myForm.myAddress.$touched}} (if true, the field has been in focus).</p>
+
+      </form>
+    </div>
+
+
+    <!-- I have created another controller for the angular module that I created in js. This div is nested  in the div with the ng-app directive just like the div with the first controller. I was having trouble creating two divs with two app directives. Only one would work. I guess I didn't really need to do that but I am curious why that failed.-->
+    <div ng-controller="myCtrl2">
+
+      <p><b>Working with filters</b></p>
+
+      <p> This list is ordered by country </p>
+      <ul>
+        <li ng-repeat="x in names | orderBy:'country'">
+          {{ x.name + " is from " + x.country }}
+        </li>
+      </ul>
+
+      <p> Here we put the currency filter on the final total </p>
+      Quantity: <input type:"text" ng-model="quantity"><br>
+      Price per: <input type:"text" ng-model="cost"><br>
+      <p>Total dollar amount: {{ quantity * cost | currency}}</p>
+
+      <p><b>filter by name:</b></p>
+
+      <p><input type="text" ng-model="test"></p>
+
+      <ul>
+        <li ng-repeat="x in names | filter :{name : test}">
+          <!-- if we wanted to filter by all fields in names than we could have just said filter : test -->
+          {{ x.name + " is from " + x.country }}
+        </li>
+      </ul>
+
+      <p><b>Order by name or by country by clicking on headers:</b></p>
+
+      <!-- By adding the ng-click directive on the table headers, we can run a function that changes the sorting order of the array. I created this function in the controller.  -->
+      <table border="1" width="100%">
+        <tr>
+          <th ng-click="orderByMe('name')">Name</th>
+          <th ng-click="orderByMe('country')">Country</th>
+        </tr>
+
+        <!-- myOrderBy will either be 'name' or 'country'. I created the function in the controller so that I could know which header was clicked -->
+        <tr ng-repeat="x in names | orderBy:myOrderBy">
+          <td>{{x.name}}</td>
+          <td>{{x.country}}</td>
+        </tr>
+      </table>
+
+      <p><b>We can create our own filters:</b></p>
+
+      <ul>
+        <li ng-repeat="x in names">
+          {{ x.name | addAlexis}}
+        </li>
+      </ul>
+
+    </div>
+
+  </div>
+
+
+
+</body>
+</html>
